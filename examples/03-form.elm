@@ -72,7 +72,7 @@ viewInput t p v toMsg =
 
 viewValidation : Model -> Html msg
 viewValidation model =
-  if model.password == model.passwordAgain then
+  if model.password == model.passwordAgain &&String.length model.password > 4 && String.any Char.isDigit model.password && String.any Char.isUpper model.password && String.any Char.isLower model.password then
     div [ style "color" "green" ] [ text "OK" ]
   else
     div [ style "color" "red" ] [ text "Passwords do not match!" ]
