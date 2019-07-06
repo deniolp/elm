@@ -88,8 +88,10 @@ viewButton t p toMsg =
 viewValidation : Model -> Html msg
 viewValidation model =
   if model.valid then
-    if model.password == model.passwordAgain && String.length model.password > 4 && String.any Char.isDigit model.password && String.any Char.isUpper model.password && String.any Char.isLower model.password && String.length model.age > 0 && String.all Char.isDigit model.age then
+    if model.password == model.passwordAgain && String.length model.password > 4 && String.any Char.isDigit model.password && String.any Char.isUpper model.password && String.any Char.isLower model.password && Maybe.withDefault 0 (String.toInt model.age) > 0 && String.all Char.isDigit model.age then
       div [ style "color" "green" ] [ text "OK" ]
+    else if Maybe.withDefault 0 (String.toInt model.age) < 1 || not (String.all Char.isDigit model.age) then
+      div [ style "color" "red" ] [ text "Age is not correct!" ]
     else
-    div [ style "color" "red" ] [ text "Passwords do not match!" ]
+      div [ style "color" "red" ] [ text "Passwords not correct or do not match!" ]
   else div [] []
