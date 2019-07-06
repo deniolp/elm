@@ -39,25 +39,25 @@ type Msg
   | Password String
   | PasswordAgain String
   | Age String
-  | Valid
+  | Validate
 
 
 update : Msg -> Model -> Model
 update msg model =
   case msg of
     Name name ->
-      { model | name = name }
+      { model | name = name, valid = False}
 
     Age age ->
-      { model | age = age }
+      { model | age = age, valid = False }
 
     Password password ->
-      { model | password = password }
+      { model | password = password, valid = False }
 
     PasswordAgain password ->
-      { model | passwordAgain = password }
+      { model | passwordAgain = password, valid = False }
 
-    Valid ->
+    Validate ->
       { model | valid = True }
 
 
@@ -73,13 +73,13 @@ view model =
     , viewInput "password" "Password" model.password Password
     , viewInput "password" "Re-enter Password" model.passwordAgain PasswordAgain
     , viewInput "text" "Age" model.age Age
-    , viewButton "button" "Submit" Valid
+    , viewButton "button" "Submit" Validate
     , viewValidation model
     ]
 
 viewInput : String -> String -> String -> (String -> msg) -> Html msg
 viewInput t p v toMsg =
-  input [ type_ t, placeholder p, value v, onInput toMsg ] []
+  input [ type_ t, placeholder p, value v, onInput toMsg] []
 
 viewButton : String -> String  -> msg -> Html msg
 viewButton t p toMsg =
