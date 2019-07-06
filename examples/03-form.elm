@@ -1,7 +1,7 @@
 import Browser
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.Events exposing (onInput)
+import Html.Events exposing (onInput, onClick)
 
 
 
@@ -18,15 +18,16 @@ main =
 
 type alias Model =
   { name : String
-  , age: String
   , password : String
   , passwordAgain : String
+  , age : String
+  , valid : Bool
   }
 
 
 init : Model
 init =
-  Model "" "" "" ""
+  Model "" "" "" "" False
 
 
 
@@ -35,9 +36,10 @@ init =
 
 type Msg
   = Name String
-  | Age String
   | Password String
   | PasswordAgain String
+  | Age String
+  | Validate
 
 
 update : Msg -> Model -> Model
@@ -55,6 +57,10 @@ update msg model =
     PasswordAgain password ->
       { model | passwordAgain = password }
 
+    Validate ->
+      { model | valid = True }
+
+
 
 
 -- VIEW
@@ -67,18 +73,19 @@ view model =
     , viewInput "password" "Password" model.password Password
     , viewInput "password" "Re-enter Password" model.passwordAgain PasswordAgain
     , viewInput "text" "Age" model.age Age
+    , button [ onClick Validate ] [ text "Submit" ]
     , viewValidation model
     ]
-
 
 viewInput : String -> String -> String -> (String -> msg) -> Html msg
 viewInput t p v toMsg =
   input [ type_ t, placeholder p, value v, onInput toMsg ] []
 
-
 viewValidation : Model -> Html msg
 viewValidation model =
-  if model.password == model.passwordAgain &&String.length model.password > 4 && String.any Char.isDigit model.password && String.any Char.isUpper model.password && String.any Char.isLower model.password && String.length model.age > 0 && String.all Char.isDigit model.age then
-    div [ style "color" "green" ] [ text "OK" ]
-  else
+  if model.valid then
+    if model.password == model.passwordAgain && String.length model.password > 4 && String.any Char.isDigit model.password && String.any Char.isUpper model.password && String.any Char.isLower model.password && String.length model.age > 0 && String.all Char.isDigit model.age then
+      div [ style "color" "green" ] [ text "OK" ]
+    else
     div [ style "color" "red" ] [ text "Passwords do not match!" ]
+  else div [] []
