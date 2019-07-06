@@ -39,7 +39,7 @@ type Msg
   | Password String
   | PasswordAgain String
   | Age String
-  | Validate
+  | Valid
 
 
 update : Msg -> Model -> Model
@@ -57,7 +57,7 @@ update msg model =
     PasswordAgain password ->
       { model | passwordAgain = password }
 
-    Validate ->
+    Valid ->
       { model | valid = True }
 
 
@@ -73,13 +73,17 @@ view model =
     , viewInput "password" "Password" model.password Password
     , viewInput "password" "Re-enter Password" model.passwordAgain PasswordAgain
     , viewInput "text" "Age" model.age Age
-    , button [ onClick Validate ] [ text "Submit" ]
+    , viewButton "button" "Submit" Valid
     , viewValidation model
     ]
 
 viewInput : String -> String -> String -> (String -> msg) -> Html msg
 viewInput t p v toMsg =
   input [ type_ t, placeholder p, value v, onInput toMsg ] []
+
+viewButton : String -> String  -> msg -> Html msg
+viewButton t p toMsg =
+  button [ type_ t, onClick toMsg ] [ text p ]
 
 viewValidation : Model -> Html msg
 viewValidation model =
